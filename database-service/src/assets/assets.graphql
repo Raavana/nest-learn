@@ -1,0 +1,49 @@
+type Asset {
+  id: String!
+  asset_url: String
+  job_id: String
+  job: Job
+  asset_type: AssetType
+  asset_description: String
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+}
+
+input CreateAssetInput {
+  asset_url: String
+  job_id: String
+  job: ConnectJobWithAssetInput
+  asset_type: AssetType
+  asset_description: String
+}
+
+input UpdateAssetInput {
+  id: String!
+  asset_url: String
+  job_id: String
+  job: ConnectJobWithAssetInput
+  asset_type: AssetType
+  asset_description: String
+}
+
+type Query {
+  assets: [Asset]!
+  asset(id: String!): Asset
+}
+
+type Mutation {
+  createAsset(createAssetInput: CreateAssetInput!): Asset!
+  updateAsset(updateAssetInput: UpdateAssetInput!): Asset!
+  removeAsset(id: String!): Asset
+}
+
+input ConnectJobWithAssetInput{
+  connect: ConnectJobInput
+}
+
+input ConnectJobInput{
+  id: String
+}

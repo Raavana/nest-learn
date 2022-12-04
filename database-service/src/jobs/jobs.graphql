@@ -1,0 +1,82 @@
+type Job {
+  id: String!
+  title: String
+  description: String
+  created_by_id: String
+  assigned_to_id: String
+  assigned_to: User
+  created_by: User
+  status: JobStatus
+  type: JobType
+  budget: Int
+  currency: String
+  revision_count: Int
+  revision_notes: String
+  created_at: String
+  assets: [Asset]
+}
+
+input CreateJobInput {
+  title: String!
+  description: String!
+  created_by_id: String
+  assigned_to_id: String
+  assigned_to: UpdateUserInput
+  created_by: ConnectUserWithJobInput!
+  status: JobStatus!
+  type: JobType!
+  budget: Int!
+  currency: String
+  revision_count: Int
+  revision_notes: String
+  assets: [CreateAssetInput]
+}
+
+input UpdateJobInput {
+  id: String!
+  title: String
+  description: String
+  assigned_to_id: String
+  assigned_to: ConnectUserWithJobInput
+  status: JobStatus
+  budget: Int
+  currency: String
+  revision_count: Int
+  revision_notes: String
+  assets: [CreateAssetInput]
+}
+
+enum JobType {
+  PHOTO_EDIT
+  VIDEO_EDIT
+  GRAPHIC_DESIGN
+  INTERIOR_DESIGN
+}
+
+enum JobStatus {
+  CREATED
+  ASSIGNED
+  IN_PROGRESS
+  REQUESTOR_ACTION
+  FINISHED
+  COMPLETE
+}
+
+type Query {
+  jobs: [Job]!
+  job(id: String!): Job
+}
+
+type Mutation {
+  createJob(createJobInput: CreateJobInput!): Job!
+  updateJob(updateJobInput: UpdateJobInput!): Job!
+  removeJob(id: String!): Job
+}
+
+input ConnectUserWithJobInput {
+  connect: ConnectUserInput
+}
+
+input ConnectUserInput {
+  id: String!
+}

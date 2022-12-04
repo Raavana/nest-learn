@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id(map: "user-primary-key")
+  email String @unique
+  firstName String?
+  lastName String?
+  role Role
+  email_verified Boolean
+  created_jobs Job[] @relation("created-jobs")
+  assigned_jobs Job[] @relation("assigned-jobs")
+  profile Profile?
+}
+
+model Profile {
+  id String @id(map: "profile-primary-key")
+  bio String
+  user User? @relation(fields: [userId], references: [id])
+  userId String @unique
+}
+
+model Job {
+  id String @id(map: "job-primary-key")
+  title String
+  description String?
+  assigned_to User? @relation("assigned-jobs", fields: [assigned_to_id], references: [id])
+  created_by User @relation("created-jobs", fields: [created_by_id], references: [id])
+  created_by_id String
+  assigned_to_id String?
+  status JobStatus
+  type JobType
+  budget Int
+  currency String
+  revision_count Int
+  revision_notes String?
+  created_at DateTime @default(now())
+  assets Asset[] @relation("related-assets")
+}
+
+model Asset {
+  id String @id(map: "asset-primary-key")
+  asset_url String
+  job Job? @relation("related-assets", fields: [job_id], references: [id])
+  job_id String?
+  asset_type AssetType
+  asset_description String?
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+}
+
+enum Role {
+  POSTER
+  SUPER_POSTER
+  CREATIVE
+  SUPER_CREATIVE
+  ADMIN
+}
+
+enum JobType {
+  PHOTO_EDIT
+  VIDEO_EDIT
+  GRAPHIC_DESIGN
+  INTERIOR_DESIGN
+}
+
+enum JobStatus {
+  CREATED
+  ASSIGNED
+  IN_PROGRESS
+  REQUESTOR_ACTION
+  FINISHED // work done
+  COMPLETE // payment done
+}

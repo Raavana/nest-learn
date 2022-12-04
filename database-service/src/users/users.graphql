@@ -1,0 +1,60 @@
+type User {
+  id: String!
+  email: String
+  firstName: String
+  lastName: String
+  role: Role
+  email_verified: Boolean
+  created_jobs: [Job]
+  assigned_jobs: [Job]
+  profile: Profile
+}
+
+enum Role {
+  POSTER
+  SUPER_POSTER
+  CREATIVE
+  SUPER_CREATIVE
+  ADMIN
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String
+  lastName: String
+  role: Role!
+  email_verified: Boolean
+  created_jobs: [UpdateJobInput]
+  assigned_jobs: [UpdateJobInput]
+  profile: CreateUserProfileInput
+}
+
+input UpdateUserInput {
+  id: String!
+  firstName: String
+  lastName: String
+  role: Role!
+  email_verified: Boolean
+  created_jobs: [UpdateJobInput]
+  assigned_jobs: [UpdateJobInput]
+  profile: UpdateUserProfileInput
+}
+
+type Query {
+  users: [User]!
+  user(id: String!): User
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: String!): User
+}
+
+input UpdateUserProfileInput {
+  update: UpdateProfileInput
+}
+
+input CreateUserProfileInput {
+  create: CreateProfileInput
+}
